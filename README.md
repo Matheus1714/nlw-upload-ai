@@ -3,7 +3,7 @@
 ![GitHub](https://img.shields.io/github/license/Matheus1714/nlw-upload-ai)
 ![GitHub deployments](https://img.shields.io/github/deployments/matheus1714/nlw-upload-ai/production)
 
-![banner-font](.github/banner-font.png)
+![banner-font](.github/animation-banner.gif)
 
 <a id="readme-top"></a>
 
