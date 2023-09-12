@@ -46,6 +46,10 @@ The technologies utilized in this project include:
 
 ## Features ✅
 
+- [X] Create Screens
+- [ ] Integrate a Back-end
+- [ ] Integrate OpenAI
+
 ## Package Dependencies ⬇️
 
 Here is a list of the project's package dependencies:
