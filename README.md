@@ -1,7 +1,6 @@
 # NLW | Upload AI Web 🚀
 
 ![GitHub](https://img.shields.io/github/license/Matheus1714/nlw-upload-ai)
-![GitHub deployments](https://img.shields.io/github/deployments/matheus1714/nlw-upload-ai/production)
 
 ![banner-font](.github/animation-banner.gif)
 
@@ -11,7 +10,6 @@
 <!--ts-->
    * [About](#about-ℹ️)
    * [About NLW](#about-nlw-🚀)
-   * [DEMO](#demo-🚀)
    * [Technologies Used](#technologies-used-⚙️)
    * [Features](#features-✅)
    * [Package Dependencies](#package-dependencies-⬇️)
@@ -35,12 +33,6 @@ This project was created during NLW to embrace and master the latest technologie
 
 <p align="right"><a href="#readme-top">🔝 Return</a></p>
 
-## DEMO 🚀
-
-To access the application click on link [Application DEMO](https://nlw-upload-ai.vercel.app/)
-
-<p align="right"><a href="#readme-top">🔝 Return</a></p>
-
 ## Technologies Used ⚙️
 
 The technologies utilized in this project include:
@@ -49,14 +41,15 @@ The technologies utilized in this project include:
 * [Typescript](https://www.typescriptlang.org/)
 * [Tailwind](https://tailwindcss.com/)
 * [Shadcn/UI](https://ui.shadcn.com/)
+* [OpenAI](https://openai.com/)
 
 <p align="right"><a href="#readme-top">🔝 Return</a></p>
 
 ## Features ✅
 
 - [X] Create Screens
-- [ ] Integrate a Back-end
-- [ ] Integrate OpenAI]
+- [X] Integrate a Back-end
+- [X] Integrate OpenAI
 
 <p align="right"><a href="#readme-top">🔝 Return</a></p>
 
@@ -66,12 +59,17 @@ Here is a list of the project's package dependencies:
 
 ```json
 "dependencies": {
+    "@ffmpeg/ffmpeg": "^0.12.6",
+    "@ffmpeg/util": "^0.12.1",
+    "@radix-ui/react-dropdown-menu": "^2.0.5",
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-select": "^1.2.2",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slider": "^1.1.2",
     "@radix-ui/react-slot": "^1.0.2",
+    "ai": "^2.2.12",
+    "axios": "^1.5.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "lucide-react": "^0.276.0",
@@ -102,19 +100,23 @@ Here is a list of the project's package dependencies:
 
 ## Running the Project 🏃
 
+1. Configure the api repository: https://github.com/Matheus1714/nlw-upload-ai-api
+
 To get started with the project, follow these steps:
 
-1. Install the project dependencies:
+2. Install the project dependencies:
 
 ```
 pnpm i
 ```
 
-2. Execute the following command in your terminal to run the project:
+3. Execute the following command in your terminal to run the project:
 
 ```
 pnpm run dev
 ```
+
+_Obs: Both this repositories and [api-repository](https://github.com/Matheus1714/nlw-upload-ai-api) must runnig together._
 
 <p align="right"><a href="#readme-top">🔝 Return</a></p>
 
@@ -152,6 +154,77 @@ pnpm dlx shadcn-ui@latest add button
 ```
 
 This made it convenient to enhance my project's user interface with these pre-designed components.
+
+### FFMPEG
+
+Using FFMPEG I learn how process a video `mp4` to `mp3` using browser user processing (Web Assembly).
+
+```tsx
+// src/components/video-input-form.tsx
+
+async function convertVideioToAudio(video: File){
+    console.log('Convert started')
+
+    const ffmpeg = await getFFmpeg()
+
+    await ffmpeg.writeFile('input.mp4', await fetchFile(video))
+
+    // ffmpeg.on('log', log => console.log(log))
+
+    ffmpeg.on('progress', progress => {
+        console.log('Convert progress: ' + Math.round(progress.progress * 100))
+    })
+
+    await ffmpeg.exec([
+        '-i',
+        'input.mp4',
+        '-map',
+        '0:a',
+        '-b:a',
+        '20k',
+        '-acodec',
+        'libmp3lame',
+        'output.mp3'
+    ])
+
+    const data = await ffmpeg.readFile('output.mp3')
+
+    const audioFileBlob = new Blob([data], { type: 'audio/mpeg' })
+    const audioFile = new File([audioFileBlob], 'audio.mp3', {
+        type: 'audio/mpeg'
+    })
+
+    console.log('Convert finishied')
+
+    return audioFile
+}
+```
+
+### OpenAI Stream
+
+I learn how use the hook `useCompletion` from OpenAI to generate a text that complete in parts my response.
+
+```tsx
+// src/app.tsx
+
+const {
+    input,
+    setInput,
+    handleInputChange,
+    handleSubmit,
+    completion,
+    isLoading,
+} = useCompletion({
+    api: 'http://localhost:3333/ai/complete',
+    body: {
+      videoId,
+      temperature,
+    },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+})
+```
 
 <p align="right"><a href="#readme-top">🔝 Return</a></p>
 
